@@ -17,7 +17,7 @@ var token | 'YOUR_BOT_API_TOKEN_HERE' | Your bot api token
 var chatsFolder | 'PATH_TO_SAVE_THE_CHATS' | The path where you want to save your chats
 
 # Limitations
-Using bots tha client have some limitations:
+Using bots the client have some limitations:
 * Cannot start a chat.
 * If a user delete the chat, your messages will not arrive.
 
