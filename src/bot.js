@@ -39,7 +39,7 @@ $('form').submit(function(){
     $('#m').val('');
     bot.sendMessage(actualChat, resp);
     chats[actualChat]['messages'].push({'text': resp, 'mine': true});
-    $('#messages').append($('<li = id="sended">').text("Sended: ".concat(resp)));
+    $('#messages').append($('<li = id="sent">').text("Sent: ".concat(resp)));
     return false;
 });
 
@@ -51,7 +51,7 @@ function changeChat( cId ) {
     _.each(messages, function(elem) {
         if (elem.mine)
         {
-            $('#messages').append($('<li = id="sended">').text("Sended: ".concat(elem.text)));
+            $('#messages').append($('<li = id="sent">').text("Sent: ".concat(elem.text)));
         }
         else
         {
@@ -81,7 +81,7 @@ window.onload = function () {
     _.each(messages, function(elem) {
         if (elem.mine)
         {
-            $('#messages').append($('<li = id="sended">').text("Sended: ".concat(elem.text)));
+            $('#messages').append($('<li = id="sent">').text("Sent: ".concat(elem.text)));
         }
         else
         {
