@@ -14,7 +14,6 @@ var actualChat;
 bot.on('message', function (msg) {
     var cId = msg.chat.id;
     var username = msg.from.username;
-    console.log(msg);
     if (cId in chats)
     {
         if ('text' in msg)
@@ -28,6 +27,7 @@ bot.on('message', function (msg) {
             {
                 $('#messages').append($('<li id="received"><img src="'+path+'" width="75%"></img></li>'));
                 chats[cId]['messages'].push({'photo': path, 'mine': false});
+                $('#messages').animate({ scrollTop: $('#messages')[0].scrollHeight }, 'fast');
             });
         }
     }
@@ -50,6 +50,7 @@ bot.on('message', function (msg) {
             {
                 $('#messages').append($('<li id="received"><img src="'+path+'" width="75%"></img></li>'));
                 chats[cId] = { 'name': username, 'messages': [{'photo': path, 'mine': false}] };
+                $('#messages').animate({ scrollTop: $('#messages')[0].scrollHeight }, 'fast');
             });
         }
         $('#chats').append($('<li id="'+cId+'" class="user"><a onClick=changeChat('+cId+')>'+username+'</a></li>'));
@@ -63,6 +64,7 @@ bot.on('message', function (msg) {
         if ('text' in msg)
         {
             $('#messages').append($('<li id="received">').text( username.concat(": ".concat(msg.text))));
+            $('#messages').animate({ scrollTop: $('#messages')[0].scrollHeight }, 'fast');
         }
     }
 });
@@ -107,7 +109,24 @@ function changeChat( cId ) {
                 $('#messages').append($('<li id="received"><img src="'+elem.photo+'" width="75%"></img></li>'));
             }
         }
-    })
+    });
+    
+    $('#messages').animate({ scrollTop: $('#messages')[0].scrollHeight }, 'fast');
+    
+    var imgs = document.images,
+    len = imgs.length,
+    counter = 0;
+
+    [].forEach.call( imgs, function( img ) {
+        img.addEventListener( 'load', incrementCounter, false );
+    } );
+
+    function incrementCounter() {
+        counter++;
+        if ( counter === len ) {
+            $('#messages').animate({ scrollTop: $('#messages')[0].scrollHeight }, 'fast');
+        }
+    }
 }
 
 window.onload = function () {
@@ -152,7 +171,24 @@ window.onload = function () {
                 $('#messages').append($('<li id="received"><img src="'+elem.photo+'" width="75%" width="75%"></img></li>'));
             }
         }
-    })
+    });
+    
+    $('#messages').animate({ scrollTop: $('#messages')[0].scrollHeight }, 'fast');
+    
+    var imgs = document.images,
+    len = imgs.length,
+    counter = 0;
+
+    [].forEach.call( imgs, function( img ) {
+        img.addEventListener( 'load', incrementCounter, false );
+    } );
+
+    function incrementCounter() {
+        counter++;
+        if ( counter === len ) {
+            $('#messages').animate({ scrollTop: $('#messages')[0].scrollHeight }, 'fast');
+        }
+    }
 }
 
 var exitHandler = function () {
