@@ -14,22 +14,56 @@ var actualChat;
 bot.on('message', function (msg) {
     var cId = msg.chat.id;
     var username = msg.from.username;
+    console.log(msg);
     if (cId in chats)
     {
-        chats[cId]['messages'].push({'text': msg.text, 'mine': false});
+        if ('text' in msg)
+        {
+            chats[cId]['messages'].push({'text': msg.text, 'mine': false});
+        }
+        if ('photo' in msg)
+        {
+            var downloadedPhoto = bot.downloadFile( msg.photo[2].file_id, chatsFolder);
+            downloadedPhoto.then( function (path)
+            {
+                $('#messages').append($('<li id="received"><img src="'+path+'" width="75%"></img></li>'));
+                chats[cId]['messages'].push({'photo': path, 'mine': false});
+            });
+        }
     }
     else
     {
+        var isFirstChat = false;
         if (_.isEmpty(chats))
         {
             actualChat = cId;
+            isFirstChat = true;
         }
-        chats[cId] = { 'name': username, 'messages': [{'text': msg.text, 'mine': false}] }
-        $('#chats').append($('<li><a onClick=changeChat('.concat(cId).concat(')>').concat(username).concat('</a></li>')));
+        if ('text' in msg)
+        {
+            chats[cId] = { 'name': username, 'messages': [{'text': msg.text, 'mine': false}] };
+        }
+        if ('photo' in msg)
+        {
+            var downloadedPhoto = bot.downloadFile( msg.photo[2].file_id, chatsFolder);
+            downloadedPhoto.then( function (path)
+            {
+                $('#messages').append($('<li id="received"><img src="'+path+'" width="75%"></img></li>'));
+                chats[cId] = { 'name': username, 'messages': [{'photo': path, 'mine': false}] };
+            });
+        }
+        $('#chats').append($('<li id="'+cId+'" class="user"><a onClick=changeChat('+cId+')>'+username+'</a></li>'));
+        if (isFirstChat)
+        {
+            $('#'+actualChat).addClass("selected");
+        }
     }
     if (actualChat == cId)
     {
-        $('#messages').append($('<li id="received">').text( username.concat(": ".concat(msg.text))));
+        if ('text' in msg)
+        {
+            $('#messages').append($('<li id="received">').text( username.concat(": ".concat(msg.text))));
+        }
     }
 });
 
@@ -44,24 +78,40 @@ $('form').submit(function(){
 });
 
 function changeChat( cId ) {
+    $('#'+actualChat).removeClass("selected");
     actualChat = cId;
+    $('#'+actualChat).addClass("selected");
     var username = chats[actualChat]['name'];
     $('#messages').empty();
     var messages = chats[actualChat]['messages'];
     _.each(messages, function(elem) {
         if (elem.mine)
         {
-            $('#messages').append($('<li = id="sent">').text("Sent: ".concat(elem.text)));
+            if ('text' in elem)
+            {
+                $('#messages').append($('<li = id="sent">').text("Sent: ".concat(elem.text)));
+            }
+            if ('photo' in elem)
+            {
+                $('#messages').append($('<li id="sent"><img src="'+elem.photo+'" width="75%"></img></li>'));
+            }
         }
         else
         {
-            $('#messages').append($('<li id="received">').text( username.concat(": ".concat(elem.text))));
+            if ('text' in elem)
+            {
+                $('#messages').append($('<li id="received">').text( username.concat(": ".concat(elem.text))));
+            }
+            if ('photo' in elem)
+            {
+                $('#messages').append($('<li id="received"><img src="'+elem.photo+'" width="75%"></img></li>'));
+            }
         }
     })
 }
 
 window.onload = function () {
-    chats = JSON.parse(fs.readFileSync(chatsFolder.concat('chats.json')));
+    chats = JSON.parse(fs.readFileSync(chatsFolder.concat('/chats.json')));
     if (_.isEmpty(chats))
     {
         return;
@@ -69,29 +119,44 @@ window.onload = function () {
     for (var cId in chats)
     {
         var username = chats[cId]['name'];
-        $('#chats').append($('<li><a onClick=changeChat('.concat(cId).concat(')>').concat(username).concat('</a></li>')));
+        $('#chats').append($('<li id="'+cId+'" class="user"><a onClick=changeChat('+cId+')>'+username+'</a></li>'));
     }
     for (var cId in chats)
     {
         actualChat = cId;
         break;
     }
+    $('#'+actualChat).addClass("selected");
     var username = chats[cId]['name'];
     var messages = chats[actualChat]['messages'];
     _.each(messages, function(elem) {
         if (elem.mine)
         {
-            $('#messages').append($('<li = id="sent">').text("Sent: ".concat(elem.text)));
+            if ('text' in elem)
+            {
+                $('#messages').append($('<li = id="sent">').text("Sent: ".concat(elem.text)));
+            }
+            if ('photo' in elem)
+            {
+                $('#messages').append($('<li id="sent"><img src="'+elem.photo+'" width="75%"></img></li>'));
+            }
         }
         else
         {
-            $('#messages').append($('<li id="received">').text( username.concat(": ".concat(elem.text))));
+            if ('text' in elem)
+            {
+                $('#messages').append($('<li id="received">').text( username.concat(": ".concat(elem.text))));
+            }
+            if ('photo' in elem)
+            {
+                $('#messages').append($('<li id="received"><img src="'+elem.photo+'" width="75%" width="75%"></img></li>'));
+            }
         }
     })
 }
 
 var exitHandler = function () {
-    fs.writeFile(chatsFolder.concat('chats.json'), JSON.stringify(chats));
+    fs.writeFile(chatsFolder.concat('/chats.json'), JSON.stringify(chats));
 };
 
 //do something when app is closing
