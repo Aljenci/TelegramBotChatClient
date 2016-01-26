@@ -5,7 +5,7 @@ A simple telegram chat client using a bot.
 | Name | URL | Install |
 | ---- | --- | ------- |
 | node telegram bot api | https://github.com/yagop/node-telegram-bot-api | npm install node-telegram-bot-api |
-| jQuerry | https://jquery.com/ | bower install jquery |
+| jQuery | https://jquery.com/ | bower install jquery |
 | Underscore | http://underscorejs.org/ | bower install underscore |
 | nwjs | http://nwjs.io/ | Download the ejecutable |
 
